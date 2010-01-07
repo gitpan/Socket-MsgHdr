@@ -6,19 +6,32 @@ use strict;
 
 our @EXPORT    = qw( sendmsg recvmsg );
 our @EXPORT_OK = qw( pack_cmsghdr unpack_cmsghdr );
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
+# Forcibly export our sendmsg, recvmsg methods
 INIT {
   *IO::Socket::sendmsg = \&sendmsg;
   *IO::Socket::recvmsg = \&recvmsg;
+}
 
-  for my $attr (qw|name buf control flags|) {
+# Define our simple accessor/mutator methods
+
+sub flags {
+  my $self = shift;
+  $self->{flags} = shift if @_;
+  $self->{flags} = 0 unless defined $self->{flags};
+  $self->{flags};
+}
+
+INIT {
+  for my $attr (qw|name buf control|) {
     no strict 'refs';
 
     *{$attr} = sub {
       my $self = shift;
       $self->{$attr} = shift if @_;
-      $self->{$attr};
+      $self->{$attr} = '' unless defined $self->{$attr};
+	  $self->{$attr};
     };
   }
 
@@ -26,7 +39,7 @@ INIT {
     no strict 'refs';
     *{$attr . "len"} = sub {
       my $self = shift;
-      my $olen = length($self->{$attr});
+      my $olen = length($self->$attr);
       return $olen unless @_;
       my $nlen = shift;
 
@@ -62,10 +75,11 @@ sub import {
 #
 sub new {
   my $class = shift;
-  my $self = { name => undef, 
-               control => undef,
-               flags => 0 };
-  
+  my $self = { name    => '',
+               control => '',
+               buf     => '',
+               flags   => 0 };
+
   bless $self, $class;
 
   my %args = @_;
@@ -115,7 +129,7 @@ Socket::MsgHdr - sendmsg, recvmsg and ancillary data operations
 
   $msgHdr->buflen(8192);    # maybe 512 wasn't enough!
   $msgHdr->namelen(256);    # only 16 bytes needed for IPv4
-  
+
   die "recvmsg: $!\n" unless defined recvmsg(IN, $msgHdr, 0);
 
   my ($port, $iaddr) = sockaddr_in($msgHdr->name());

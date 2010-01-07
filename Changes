@@ -1,5 +1,20 @@
 Revision history for Perl extension Socket::MsgHdr.
 
+LY - Lincoln Yeoh
+TLB - Troels Liebe Bentsen
+PE - Paul Evans
+
+0.02  Wed Jan 06 21:12:36 2010
+    - (MsgHdr.pm) Silence uninitialized value warnings.  Socket::MsgHdr
+      member attributes now default to empty strings (for buffer-like
+      attributes) or zero (for `flags').  Thx LY, TLB, PE.
+
+    - (MsgHdr.xs) Rename utility function, comment for clarity.  Small
+      cleanup.
+
+    - (ppport.h, &c.) Contemporary perl modularization.  ppport.h v. 3.19
+      (perl 5.10.1), "lib/" directory layout.
+
 0.01  Wed Mar 26 22:46:07 2003
 	- original version; created by h2xs 1.22 with options
 		-b 5.6.0 -An Socket::MsgHdr

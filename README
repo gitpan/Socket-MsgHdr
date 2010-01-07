@@ -1,4 +1,4 @@
-Socket/MsgHdr version 0.01
+Socket/MsgHdr version 0.02
 ==========================
 
 Advanced socket messaging operations:  sendmsg, recvmsg and cmsghdr
@@ -18,7 +18,7 @@ To install this module type the following:
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2003 Michael J. Pomraning
+Copyright (C) 2003, 2010 Michael J. Pomraning
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

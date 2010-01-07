@@ -6,7 +6,7 @@
 # change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test::More;
-BEGIN { plan tests => 8 };
+BEGIN { plan tests => 9 };
 use bytes;
 use strict;
 use Socket;
@@ -92,7 +92,7 @@ eval { defined recvmsg(\*STDIN, new Socket::MsgHdr(buf=>"fail"))
        or die "recvmsg: $!\n"; }; # ENOTSOCK
 ok($@, "recvmsg() undef on failure");
 
-# 8
+# 8..9
 SKIP: {
   no strict 'subs';
   eval { &SOL_SOCKET; &SCM_RIGHTS; };
@@ -122,6 +122,6 @@ SKIP: {
   my ($dev1, $ino1, $dev2, $ino2) =
      ((stat(STDIN))[0,1], (stat(New))[0,1]);
 
-  ok($dev1 == $dev2 and $ino1 == $ino2, "scm_rights test");
-
+  cmp_ok($dev1, '==', $dev2, "scm_rights fds on same device");
+  cmp_ok($ino1, '==', $ino2, "scm_rights fds are same inode");
 };

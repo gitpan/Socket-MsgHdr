@@ -35,7 +35,7 @@ for $m (qw|name buf control|) {
   my $val = "foo" x int(rand(256)+1);
   my $hdr = new Socket::MsgHdr ($m => $val);
   my $mlen = $m. "len";
-  ok($val == $hdr->$m() && length($hdr->$m)==$hdr->$mlen, "$m method/ctor ok");
+  ok($val eq $hdr->$m() && length($hdr->$m)==$hdr->$mlen, "$m method/ctor ok");
 }
 
 my $hdr = Socket::MsgHdr->new();

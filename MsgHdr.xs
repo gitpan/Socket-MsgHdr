@@ -22,38 +22,39 @@ struct Socket__MsgHdr {
 };
 
 static void
-hv_2msghdr(struct Socket__MsgHdr *mh, SV *thing)
+smhobj_2msghdr(SV *obj, struct Socket__MsgHdr *mh)
 {
     HV*     hash;
     SV **   svp;
     STRLEN  dlen;
 
-    if (!thing || !sv_isa(thing, "Socket::MsgHdr"))
+    if (!obj || !sv_isa(obj, "Socket::MsgHdr"))
         croak("parameter not of type Socket::MsgHdr");
 
-    hash = (HV*) SvRV(thing);
+    hash = (HV*) SvRV(obj);
 
     Zero(mh, 1, struct Socket__MsgHdr);
 
     mh->m.msg_iov    = &mh->io;
     mh->m.msg_iovlen = 1;
 
-    if (svp = hv_fetch(hash, "name", 4, FALSE)) {
+    /* set any values explicitly supplied by the user */
+    if ((svp = hv_fetch(hash, "name", 4, FALSE)) && SvOK(*svp)) {
         mh->m.msg_name    = SvPV_force(*svp, dlen);
         mh->m.msg_namelen = dlen;
     }
 
-    if (svp = hv_fetch(hash, "buf", 3, FALSE)) {
+    if ((svp = hv_fetch(hash, "buf", 3, FALSE)) && SvOK(*svp)) {
         mh->io.iov_base = SvPV_force(*svp, dlen);
         mh->io.iov_len  = dlen;
     }
 
-    if (svp = hv_fetch(hash, "control", 7, FALSE)) {
+    if ((svp = hv_fetch(hash, "control", 7, FALSE)) && SvOK(*svp)) {
         mh->m.msg_control    = SvPV_force(*svp, dlen);
         mh->m.msg_controllen = dlen;
     }
 
-    if (svp = hv_fetch(hash, "flags", 5, FALSE)) {
+    if ((svp = hv_fetch(hash, "flags", 5, FALSE)) && SvOK(*svp)) {
         mh->m.msg_flags    = SvIV(*svp);
     }
 }
@@ -79,7 +80,7 @@ smh_pack_cmsghdr(...)
         SvCUR_set(RETVAL, space);
 
         cm = (struct cmsghdr *)SvPVX(RETVAL);
-        
+
         for (i=0; i<items; i+=3) {
             len = sv_len(ST(i+2));
             cm->cmsg_len = CMSG_LEN(len);
@@ -123,7 +124,7 @@ smh_sendmsg(s, msg_hdr, flags = 0)
     PREINIT:
     struct Socket__MsgHdr mh;
     CODE:
-    hv_2msghdr(&mh, msg_hdr);
+    smhobj_2msghdr(msg_hdr, &mh);
     RETVAL = sendmsg(PerlIO_fileno(s), &mh.m, flags);
     OUTPUT:
     RETVAL
@@ -137,21 +138,20 @@ smh_recvmsg(s, msg_hdr, flags = 0)
     PROTOTYPE: $$;$
     PREINIT:
     struct Socket__MsgHdr mh;
-    struct cmsghdr *cm;
-        
+
     CODE:
-    hv_2msghdr(&mh, msg_hdr);
+    smhobj_2msghdr(msg_hdr, &mh);
     if ((RETVAL = recvmsg(PerlIO_fileno(s), &mh.m, flags)) >= 0) {
         SV**    svp;
         HV*     hsh;
 
         hsh = (HV*) SvRV(msg_hdr);
 
-        if (svp = hv_fetch(hsh, "name", 7, FALSE))
+        if ((svp = hv_fetch(hsh, "name", 4, FALSE)))
             SvCUR_set(*svp, mh.m.msg_namelen);
-        if (svp = hv_fetch(hsh, "buf", 3, FALSE))
+        if ((svp = hv_fetch(hsh, "buf", 3, FALSE)))
             SvCUR_set(*svp, RETVAL);
-        if (svp = hv_fetch(hsh, "control", 7, FALSE))
+        if ((svp = hv_fetch(hsh, "control", 7, FALSE)))
             SvCUR_set(*svp, mh.m.msg_controllen);
     }
     OUTPUT:
