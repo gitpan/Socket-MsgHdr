@@ -4,6 +4,9 @@ LY - Lincoln Yeoh
 TLB - Troels Liebe Bentsen
 PE - Paul Evans
 
+0.03  Wed Jan 06 21:48:05 2010
+    - (MsgHdr.pm) Update copyright and contact email, POD fixes.
+
 0.02  Wed Jan 06 21:12:36 2010
     - (MsgHdr.pm) Silence uninitialized value warnings.  Socket::MsgHdr
       member attributes now default to empty strings (for buffer-like

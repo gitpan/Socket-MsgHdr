@@ -6,7 +6,7 @@ use strict;
 
 our @EXPORT    = qw( sendmsg recvmsg );
 our @EXPORT_OK = qw( pack_cmsghdr unpack_cmsghdr );
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 # Forcibly export our sendmsg, recvmsg methods
 INIT {
@@ -189,7 +189,11 @@ I<controllen> bytes of ancillary data.
 Returns number of bytes received, or undef on failure.  I<buflen>
 et. al. are updated to reflect the actual lengths of received data.
 
+=back
+
 =head2 Socket::MsgHdr
+
+=over 4
 
 =item new [PARAMETERS]
 
@@ -282,13 +286,13 @@ L<sendmsg(2)>, L<recvmsg(2)>, L<File::FDpasser>, L<"RFC 2292">
 
 Michael J. Pomraning
 
-Please report bugs to E<lt>mjp-perl AT pilcrow.madison.wi.us E<gt>
+Please report bugs to E<lt>mjp AT cpan DOT org E<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003 by Michael J. Pomraning
+Copyright 2003, 2010 by Michael J. Pomraning
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+it under the same terms as Perl itself.
 
 =cut
