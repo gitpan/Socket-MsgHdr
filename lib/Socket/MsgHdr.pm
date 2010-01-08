@@ -6,7 +6,7 @@ use strict;
 
 our @EXPORT    = qw( sendmsg recvmsg );
 our @EXPORT_OK = qw( pack_cmsghdr unpack_cmsghdr );
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 # Forcibly export our sendmsg, recvmsg methods
 INIT {
@@ -140,7 +140,7 @@ Socket::MsgHdr - sendmsg, recvmsg and ancillary data operations
   $outHdr->cmsghdr(SOL_SOCKET,                # cmsg_level
                    SCM_RIGHTS,                # cmsg_type
                    pack("i", fileno(STDIN))); # cmsg_data
-  sendmsg(OUT, $msgHdr);
+  sendmsg(OUT, $outHdr);
 
   # Unpack the same
   my $inHdr = Socket::MsgHdr->new(buflen => 8192, controllen => 256);

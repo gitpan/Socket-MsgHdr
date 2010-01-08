@@ -38,20 +38,25 @@ smhobj_2msghdr(SV *obj, struct Socket__MsgHdr *mh)
     mh->m.msg_iov    = &mh->io;
     mh->m.msg_iovlen = 1;
 
-    /* set any values explicitly supplied by the user */
+    /* Set any values supplied by the user, but translate
+     * empty strings to explicit NULLs (for FreeBSD's sake).
+     */
     if ((svp = hv_fetch(hash, "name", 4, FALSE)) && SvOK(*svp)) {
         mh->m.msg_name    = SvPV_force(*svp, dlen);
         mh->m.msg_namelen = dlen;
+        if (0 == dlen) mh->m.msg_name = NULL;
     }
 
     if ((svp = hv_fetch(hash, "buf", 3, FALSE)) && SvOK(*svp)) {
         mh->io.iov_base = SvPV_force(*svp, dlen);
         mh->io.iov_len  = dlen;
+        if (0 == dlen) mh->io.iov_base = NULL;
     }
 
     if ((svp = hv_fetch(hash, "control", 7, FALSE)) && SvOK(*svp)) {
         mh->m.msg_control    = SvPV_force(*svp, dlen);
         mh->m.msg_controllen = dlen;
+        if (0 == dlen) mh->m.msg_control = NULL;
     }
 
     if ((svp = hv_fetch(hash, "flags", 5, FALSE)) && SvOK(*svp)) {
