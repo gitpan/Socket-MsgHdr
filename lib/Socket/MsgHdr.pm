@@ -5,8 +5,8 @@ use strict;
 #use bytes;
 
 our @EXPORT    = qw( sendmsg recvmsg );
-our @EXPORT_OK = qw( pack_cmsghdr unpack_cmsghdr );
-our $VERSION = '0.04_01';
+our @EXPORT_OK = qw( pack_cmsghdr unpack_cmsghdr ); # Undocumented!
+our $VERSION = '0.04_02';
 
 # Forcibly export our sendmsg, recvmsg methods
 INIT {

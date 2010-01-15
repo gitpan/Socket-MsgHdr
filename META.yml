@@ -1,9 +1,9 @@
 --- #YAML:1.0
 name:               Socket-MsgHdr
-version:            0.04_01
+version:            0.04_02
 abstract:           sendmsg, recvmsg and ancillary data operations
 author:
-    - A. U. Thor <mjp@domain_not_set.invalid>
+    - Mike Pomraning <mjp@cpan.org>
 license:            unknown
 distribution_type:  module
 configure_requires:
